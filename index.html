@@ -44,10 +44,8 @@
         <button class="topbutton" id="settings-button" aria-label="Abrir configuraciones">i</button>
 
         <div id="screen" role="main">
-            <p>Selecciona el archivo JAR:</p>
-            <label for="file-selector" style="cursor:pointer;">
-                <img id="file-selector" src="img/arrow_up.png" alt="Seleccionar archivo JAR" width="128" height="128">
-            </label>
+            <p>El archivo JAR se cargará automáticamente:</p>
+            <p><strong>mini.jar</strong></p>
         </div>
 
         <div id="keypad">
@@ -105,6 +103,19 @@
     </div>
 
     <script>
+        // Lógica para cargar y ejecutar mini.jar desde GitHub
+        window.onload = function() {
+            const jarUrl = "https://chitomx.github.io/dreamerkrazy/mini.jar";
+            const emulator = new JS2ME.Emulator(); // Asegúrate de que JS2ME esté correctamente inicializado
+
+            emulator.loadJar(jarUrl).then(function() {
+                console.log("El archivo JAR se ha cargado correctamente.");
+                emulator.run(); // Ejecutar el archivo JAR cargado
+            }).catch(function(error) {
+                console.error("Hubo un problema al cargar el archivo JAR:", error);
+            });
+        };
+
         // Agrega interactividad básica como mostrar/ocultar configuraciones y alertas
         document.getElementById("settings-button").addEventListener("click", function() {
             document.getElementById("settings").classList.toggle("open");
