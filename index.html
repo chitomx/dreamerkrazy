@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS2ME Emulator</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>My Web App</title>
+    <!-- Replace with the actual path to js2me.js -->
+    <script src="https://example.com/js2me.js"></script> <!-- Update the path here -->
 </head>
 <body>
-    <div id="container">
-        <p>Cargando archivo JAR: <strong>mini.jar</strong></p>
-        <div id="screen"></div>
-        <button id="start" onclick="loadAndRunJar()">Cargar y ejecutar JAR</button>
-    </div>
+    <button onclick="loadAndRunJar()">Ejecutar JAR</button>
 
-    <script src="js/js2me.js"></script>
     <script>
-        function loadAndRunJar() {
-            const jarUrl = "https://chitomx.github.io/dreamerkrazy/mini.jar";
-            const emulator = new JS2ME.Emulator(); // Asegúrate de que esta clase esté bien definida en tu JS2ME
+        const jarUrl = "https://chitomx.github.io/dreamerkrazy/mini.jar"; // URL del archivo JAR
 
-            // Función para cargar el archivo JAR desde la URL
-            function loadJarFromUrl(url) {
-                fetch(url)
+        function loadAndRunJar() {
+            // Verificar si JS2ME está correctamente cargado
+            if (typeof JS2ME !== 'undefined') {
+                const emulator = new JS2ME.Emulator(); // Crear la instancia del emulador
+
+                // Cargar el archivo JAR usando fetch
+                fetch(jarUrl)
                     .then(response => response.blob())
                     .then(blob => {
-                        const reader = new FileReader();
-                        reader.onload = function() {
-                            const arrayBuffer = reader.result;
-                            emulator.loadJar(arrayBuffer)  // Esta función debe existir en tu JS2ME
-                                .then(() => {
-                                    console.log("Archivo JAR cargado correctamente.");
-                                    emulator.run();  // Ejecutar el archivo JAR cargado
-                                })
-                                .catch(error => {
-                                    console.error("Error al cargar el archivo JAR:", error);
-                                });
+                        const fileReader = new FileReader();
+                        fileReader.onload = function(event) {
+                            const jarData = event.target.result;
+
+                            // Cargar el archivo JAR al emulador y ejecutarlo
+                            emulator.loadJAR(jarData);
+                            emulator.run(); // Ejecutar el archivo JAR
                         };
-                        reader.readAsArrayBuffer(blob);
+                        fileReader.readAsArrayBuffer(blob);
                     })
                     .catch(error => {
-                        console.error("Error al obtener el archivo JAR:", error);
+                        console.error("Error al cargar el archivo JAR:", error);
                     });
+            } else {
+                console.error("JS2ME no se ha cargado correctamente.");
+                alert("Error al cargar la biblioteca JS2ME.");
             }
-
-            // Cargar y ejecutar el archivo JAR
-            loadJarFromUrl(jarUrl);
         }
     </script>
 </body>
