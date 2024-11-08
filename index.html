@@ -2,147 +2,50 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JS2ME Emulator</title>
-
-    <!-- Vinculación de CSS -->
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/emulator.css">
-
-    <!-- Scripts de JavaScript -->
-    <script src="js/zip/zip.js" defer></script>
-    <script src="js/zip/inflate.js" defer></script>
-    <script src="js/zip/zip-ext.js" defer></script>
-    <script src="js/js2me.js" defer></script>
-    <script src="js/bufferStream.js" defer></script>
-    <script src="js/convert.js" defer></script>
-    <script src="js/classes.js" defer></script>
-    <script src="js/emulator.js" defer></script>
-    <script src="js/execute.js" defer></script>
-    <script src="js/events.js" defer></script>
-    <script src="js/manifest.js" defer></script>
-    <script src="js/methodStub.js" defer></script>
-    <script src="js/launcher.js" defer></script>
-    <script src="js/loader.js" defer></script>
-    <script src="js/numbers.js" defer></script>
-    <script src="js/resources.js" defer></script>
-    <script src="js/threads.js" defer></script>
-    <script src="js/workers.js" defer></script>
-    <script src="js/utils.js" defer></script>
-
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div id="frame">
-        <button class="topbutton" id="show" aria-label="Expandir ventana">></button>
-
-        <div id="top">
-            <button class="topbutton" id="hide" aria-label="Contraer ventana"><</button>
-            <div id="title" role="banner"></div>
-            <button class="topbutton" id="exit" aria-label="Cerrar emulador">X</button>
-        </div>
-
-        <button class="topbutton" id="settings-button" aria-label="Abrir configuraciones">i</button>
-
-        <div id="screen" role="main">
-            <p>El archivo JAR se está cargando desde la URL:</p>
-            <p><strong>mini.jar</strong></p>
-        </div>
-
-        <div id="keypad">
-            <div id="joypad" role="group" aria-label="Controles del joystick">
-                <button id="up" class="key num" aria-label="Arriba"></button><br>
-                <button id="left" class="key num" aria-label="Izquierda"></button>
-                <button id="ok" class="key num" aria-label="Aceptar"></button>
-                <button id="right" class="key num" aria-label="Derecha"></button><br>
-                <button id="down" class="key num" aria-label="Abajo"></button>
-            </div>
-
-            <button id="choice" class="softkey" aria-label="Opción de elección"></button>
-            <button id="open-joypad" class="key" aria-label="Abrir joystick virtual"></button>
-            <button id="back" class="softkey" aria-label="Volver"></button><br>
-
-            <button id="num1" class="key num">1</button>
-            <button id="num2" class="key num">2</button>
-            <button id="num3" class="key num">3</button><br>
-            <button id="num4" class="key num">4</button>
-            <button id="num5" class="key num">5</button>
-            <button id="num6" class="key num">6</button><br>
-            <button id="num7" class="key num">7</button>
-            <button id="num8" class="key num">8</button>
-            <button id="num9" class="key num">9</button><br>
-            <button id="star" class="key num">*</button>
-            <button id="num0" class="key num">0</button>
-            <button id="pound" class="key num">#</button><br>
-        </div>
+    <div id="container">
+        <p>Cargando archivo JAR: <strong>mini.jar</strong></p>
+        <div id="screen"></div>
+        <button id="start" onclick="loadAndRunJar()">Cargar y ejecutar JAR</button>
     </div>
 
-    <!-- Alerta de error -->
-    <div id="alert" aria-live="assertive" role="alert">
-        <div class="message">¡Error!</div>
-    </div>
-
-    <!-- Configuración -->
-    <div id="settings" aria-hidden="true">
-        <div class="dialog">
-            <div class="options">
-                <div class="option">
-                    <label for="screen-size">Resolución de pantalla (requiere recarga):</label>
-                    <select class="screen-size" id="screen-size">
-                        <option value="128,96,128">128x128</option>
-                        <option value="176,176,220">176x220</option>
-                        <option value="240,266,320">240x320</option>
-                    </select>
-                </div>
-                <div class="option">
-                    <button class="generate-methods" aria-label="Generar métodos">Generar métodos</button>
-                    <aside>Esto puede tardar un tiempo</aside>
-                </div>
-            </div>
-            <button class="done" aria-label="Cerrar configuración">Hecho</button>
-        </div>
-    </div>
-
+    <script src="js/js2me.js"></script>
     <script>
-        // Lógica para cargar y ejecutar mini.jar desde GitHub
-        window.onload = function() {
+        function loadAndRunJar() {
             const jarUrl = "https://chitomx.github.io/dreamerkrazy/mini.jar";
-            const emulator = new JS2ME.Emulator(); // Asegúrate de que JS2ME esté correctamente inicializado
+            const emulator = new JS2ME.Emulator(); // Asegúrate de que esta clase esté bien definida en tu JS2ME
 
-            // Función para cargar el JAR desde la URL
+            // Función para cargar el archivo JAR desde la URL
             function loadJarFromUrl(url) {
                 fetch(url)
                     .then(response => response.blob())
                     .then(blob => {
-                        const fileReader = new FileReader();
-                        fileReader.onload = function() {
-                            const arrayBuffer = fileReader.result;
-                            emulator.loadJar(arrayBuffer)
-                                .then(function() {
-                                    console.log("El archivo JAR se ha cargado correctamente.");
-                                    emulator.run(); // Ejecutar el archivo JAR cargado
+                        const reader = new FileReader();
+                        reader.onload = function() {
+                            const arrayBuffer = reader.result;
+                            emulator.loadJar(arrayBuffer)  // Esta función debe existir en tu JS2ME
+                                .then(() => {
+                                    console.log("Archivo JAR cargado correctamente.");
+                                    emulator.run();  // Ejecutar el archivo JAR cargado
                                 })
-                                .catch(function(error) {
-                                    console.error("Hubo un problema al cargar el archivo JAR:", error);
+                                .catch(error => {
+                                    console.error("Error al cargar el archivo JAR:", error);
                                 });
                         };
-                        fileReader.readAsArrayBuffer(blob);
+                        reader.readAsArrayBuffer(blob);
                     })
-                    .catch(function(error) {
+                    .catch(error => {
                         console.error("Error al obtener el archivo JAR:", error);
                     });
             }
 
-            // Llamar a la función para cargar y ejecutar el JAR
+            // Cargar y ejecutar el archivo JAR
             loadJarFromUrl(jarUrl);
-        };
-
-        // Agrega interactividad básica como mostrar/ocultar configuraciones y alertas
-        document.getElementById("settings-button").addEventListener("click", function() {
-            document.getElementById("settings").classList.toggle("open");
-        });
-        document.getElementById("exit").addEventListener("click", function() {
-            window.close();
-        });
+        }
     </script>
 </body>
 </html>
