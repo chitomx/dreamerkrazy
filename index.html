@@ -44,7 +44,7 @@
         <button class="topbutton" id="settings-button" aria-label="Abrir configuraciones">i</button>
 
         <div id="screen" role="main">
-            <p>El archivo JAR se cargará automáticamente:</p>
+            <p>El archivo JAR se está cargando desde la URL:</p>
             <p><strong>mini.jar</strong></p>
         </div>
 
@@ -108,12 +108,32 @@
             const jarUrl = "https://chitomx.github.io/dreamerkrazy/mini.jar";
             const emulator = new JS2ME.Emulator(); // Asegúrate de que JS2ME esté correctamente inicializado
 
-            emulator.loadJar(jarUrl).then(function() {
-                console.log("El archivo JAR se ha cargado correctamente.");
-                emulator.run(); // Ejecutar el archivo JAR cargado
-            }).catch(function(error) {
-                console.error("Hubo un problema al cargar el archivo JAR:", error);
-            });
+            // Función para cargar el JAR desde la URL
+            function loadJarFromUrl(url) {
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const fileReader = new FileReader();
+                        fileReader.onload = function() {
+                            const arrayBuffer = fileReader.result;
+                            emulator.loadJar(arrayBuffer)
+                                .then(function() {
+                                    console.log("El archivo JAR se ha cargado correctamente.");
+                                    emulator.run(); // Ejecutar el archivo JAR cargado
+                                })
+                                .catch(function(error) {
+                                    console.error("Hubo un problema al cargar el archivo JAR:", error);
+                                });
+                        };
+                        fileReader.readAsArrayBuffer(blob);
+                    })
+                    .catch(function(error) {
+                        console.error("Error al obtener el archivo JAR:", error);
+                    });
+            }
+
+            // Llamar a la función para cargar y ejecutar el JAR
+            loadJarFromUrl(jarUrl);
         };
 
         // Agrega interactividad básica como mostrar/ocultar configuraciones y alertas
